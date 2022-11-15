@@ -1,13 +1,23 @@
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
-type TabContextValues = { currentTab: number; handleTabChange: any };
+type TabContextValues = {
+  currentTab: number;
+  handleTabChange: null | ((indexToSet: number) => void);
+};
 
 const TabContext = createContext<TabContextValues>({
   currentTab: 1,
-  handleTabChange: undefined,
+  handleTabChange: null,
 });
 
-const Tab = ({ children, currentTab, handleTabChange }: any) => {
+const Tab = ({ children }: any) => {
+  const [currentTab, setCurrentTab] = useState<number>(1);
+
+  const handleTabChange = (indexToSet: number): void => {
+    setCurrentTab((prev: number) => (prev = indexToSet));
+  };
+
+  console.log(handleTabChange);
   return (
     <TabContext.Provider value={{ currentTab, handleTabChange }}>
       <div style={{ border: "1px solid white", width: "100%" }}>{children}</div>
@@ -43,15 +53,17 @@ Tab.TabHeadItem = ({
 }): any => {
   const { currentTab, handleTabChange } = useContext(TabContext);
   return (
-    <div
-      style={{
-        cursor: "pointer",
-        color: currentTab === tabIndex ? "lightslategrey" : "",
-      }}
-      onClick={() => handleTabChange(tabIndex)}
-    >
-      {children}
-    </div>
+    handleTabChange !== null && (
+      <div
+        style={{
+          cursor: "pointer",
+          color: currentTab === tabIndex ? "lightslategrey" : "",
+        }}
+        onClick={() => handleTabChange(tabIndex)}
+      >
+        {children}
+      </div>
+    )
   );
 };
 

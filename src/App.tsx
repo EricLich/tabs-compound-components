@@ -1,17 +1,10 @@
-import { useState } from "react";
 import "./App.css";
 import Tab from "./components/Tab";
 
 function App() {
-  const [currentTab, setCurrentTab] = useState<number>(1);
-
-  const handleTabChange = (indexToSet: number): void => {
-    setCurrentTab((prev: number) => (prev = indexToSet));
-  };
-
   return (
     <div className="App">
-      <Tab currentTab={currentTab} handleTabChange={handleTabChange}>
+      <Tab>
         <Tab.TabHead>
           <Tab.TabHeadItem tabIndex={1}>Tab 1</Tab.TabHeadItem>
           <Tab.TabHeadItem tabIndex={2}>Tab 2</Tab.TabHeadItem>
