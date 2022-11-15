@@ -1,14 +1,16 @@
-import { createContext, useContext } from "react";
+import { createContext, ReactNode, useContext } from "react";
 
-const TabContext = createContext<{ currentTab: number; handleTabChange: any }>({
+type TabContextValues = { currentTab: number; handleTabChange: any };
+
+const TabContext = createContext<TabContextValues>({
   currentTab: 1,
-  handleTabChange: null,
+  handleTabChange: undefined,
 });
 
 const Tab = ({ children, currentTab, handleTabChange }: any) => {
   return (
     <TabContext.Provider value={{ currentTab, handleTabChange }}>
-      {children}
+      <div style={{ border: "1px solid white", width: "100%" }}>{children}</div>
     </TabContext.Provider>
   );
 };
@@ -16,12 +18,41 @@ const Tab = ({ children, currentTab, handleTabChange }: any) => {
 export default Tab;
 
 Tab.TabHead = ({ children }: any) => {
-  return <div>{children}</div>;
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: "10px",
+        alignItems: "center",
+        justifyContent: "space-between",
+        borderBottom: "1px solid white",
+        padding: "20px",
+      }}
+    >
+      {children}
+    </div>
+  );
 };
 
-Tab.TabHeadItem = ({ children, tabIndex }: any): any => {
-  const { currentTab } = useContext(TabContext);
-  return tabIndex === currentTab && <div>{children}</div>;
+Tab.TabHeadItem = ({
+  children,
+  tabIndex,
+}: {
+  children: ReactNode;
+  tabIndex: number;
+}): any => {
+  const { currentTab, handleTabChange } = useContext(TabContext);
+  return (
+    <div
+      style={{
+        cursor: "pointer",
+        color: currentTab === tabIndex ? "lightslategrey" : "",
+      }}
+      onClick={() => handleTabChange(tabIndex)}
+    >
+      {children}
+    </div>
+  );
 };
 
 Tab.TabContainer = ({ children }: any) => {
@@ -30,5 +61,7 @@ Tab.TabContainer = ({ children }: any) => {
 
 Tab.TabContent = ({ children, tabIndex }: any): any => {
   const { currentTab } = useContext(TabContext);
-  return tabIndex === currentTab && <div>{children}</div>;
+  return (
+    tabIndex === currentTab && <div style={{ padding: "20px" }}>{children}</div>
+  );
 };
